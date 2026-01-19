@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蛋仔派对直播时间表</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f8fbff;
+            color: #1a3a5f;
+            line-height: 1.6;
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px 15px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #e3f2ff 0%, #c5e4ff 100%);
+            box-shadow: 0 5px 15px rgba(0, 80, 200, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        h1 {
+            color: #1a3a5f;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        h1 i {
+            color: #ff7bac;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #3a5a8c;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        
+        .notice {
+            background-color: #fff8e6;
+            border-left: 5px solid #ffb74d;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #5d4037;
+            font-size: 0.9rem;
+        }
+        
+        .notice i {
+            color: #ff9800;
+            margin-right: 6px;
+        }
+        
+        .schedule-container {
+            background-color: white;
+            border-radius: 18px;
+            padding: 20px 15px;
+            box-shadow: 0 5px 15px rgba(0, 60, 180, 0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .schedule-title {
+            color: #1a3a5f;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* 移动端友好的表格样式 */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 60, 180, 0.05);
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .schedule-table table {
+            width: 100%;
+            min-width: 600px;
+        }
+        
+        .schedule-table thead {
+            background: linear-gradient(135deg, #4dabf7 0%, #2c80d1 100%);
+            color: white;
+        }
+        
+        .schedule-table th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+        
+        .schedule-table th i {
+            margin-right: 6px;
+        }
+        
+        .schedule-table tbody tr {
+            border-bottom: 1px solid #eef5ff;
+            transition: background-color 0.2s ease;
+        }
+        
+        .schedule-table tbody tr:hover {
+            background-color: #f8fbff;
+        }
+        
+        .schedule-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-table td {
+            padding: 16px 12px;
+            vertical-align: top;
+        }
+        
+        .day-cell {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a3a5f;
+            white-space: nowrap;
+        }
+        
+        .time-cell {
+            white-space: nowrap;
+            color: #2c5282;
+            font-weight: 600;
+        }
+        
+        .time-cell i {
+            color: #4dabf7;
+            margin-right: 6px;
+        }
+        
+        .seats-cell {
+            white-space: nowrap;
+        }
+        
+        .seats-badge {
+            background-color: #e6f7ff;
+            color: #0066cc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        
+        .play-cell {
+            min-width: 200px;
+        }
+        
+        .play-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .play-card {
+            background: linear-gradient(135deg, #e3f2ff 0%, #d1e8ff 100%);
+            color: #1a3a5f;
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        
+        .play-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .play-count {
+            background-color: white;
+            color: #0066cc;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        
+        .rest-row {
+            background-color: #fff5f7;
+        }
+        
+        .rest-cell {
+            text-align: center;
+            padding: 25px 12px;
+            color: #ff6b8b;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .rest-cell i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .rules-section {
+            background-color: white;
+            border-radius: 18px;
+            padding: 25px 15px;
+            box-shadow: 0 5px 15px rgba(0, 60, 180, 0.08);
+            margin-top: 25px;
+        }
+        
+        .rules-title {
+            color: #1a3a5f;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .rule-card {
+            background-color: #f8fbff;
+            border-radius: 12px;
+            padding: 18px;
+            border-left: 5px solid #4dabf7;
+        }
+        
+        .rule-card h4 {
+            color: #2c5282;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .rule-card p {
+            color: #3a5a8c;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 18px;
+            color: #3a5a8c;
+            font-size: 0.85rem;
+            border-top: 1px solid #eef5ff;
+        }
+        
+        /* 手机小屏幕优化 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 15px 10px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            h1 i {
+                font-size: 1.8rem;
+            }
+            
+            .schedule-container {
+                padding: 15px 10px;
+                border-radius: 15px;
+            }
+            
+            .schedule-title {
+                font-size: 1.3rem;
+            }
+            
+            .schedule-table th,
+            .schedule-table td {
+                padding: 12px 8px;
+            }
+            
+            .day-cell {
+                font-size: 1rem;
+            }
+            
+            .time-cell {
+                font-size: 0.95rem;
+            }
+            
+            .seats-badge {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .play-card {
+                padding: 8px 12px;
+            }
+            
+            .play-name {
+                font-size: 0.95rem;
+            }
+            
+            .rules-section {
+                padding: 20px 12px;
+                border-radius: 15px;
+            }
+            
+            .rules-title {
+                font-size: 1.3rem;
+            }
+            
+            .rule-card {
+                padding: 15px;
+            }
+            
+            .rest-cell {
+                padding: 20px 8px;
+                font-size: 1rem;
+            }
+            
+            .rest-cell i {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* 平板和桌面优化 */
+        @media (min-width: 768px) {
+            .rules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .rules-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .play-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .play-card {
+                min-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-gamepad"></i> 蛋仔派对直播时间表</h1>
+        <p class="subtitle">稳定开播，欢乐不断，准时相约蛋仔岛！</p>
+        <div class="notice">
+            <p><i class="fas fa-info-circle"></i> 后续主播将严格按照以上开播时间直播，如有变动将在粉丝群通知</p>
+        </div>
+    </div>
+    
+    <div class="schedule-container">
+        <h2 class="schedule-title"><i class="far fa-calendar-alt"></i> 每周直播时间安排</h2>
+        
+        <div class="schedule-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="far fa-calendar"></i> 星期</th>
+                        <th><i class="far fa-clock"></i> 直播时间</th>
+                        <th><i class="fas fa-chair"></i> 车位</th>
+                        <th><i class="fas fa-gamepad"></i> 可选玩法</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 星期一 -->
+                    <tr>
+                        <td class="day-cell">星期一</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">好蛋成双</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗自建房</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                                <div class="play-card">
+                                    <span class="play-name">炸弹狂欢</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期二 - 中午 -->
+                    <tr>
+                        <td class="day-cell">星期二</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 12:00 - 15:00</td>
+                        <td class="seats-cell"><span class="seats-badge">9人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期二 - 晚上 -->
+                    <tr>
+                        <td class="day-cell"></td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期三 - 休息 -->
+                    <tr class="rest-row">
+                        <td class="day-cell">星期三</td>
+                        <td colspan="3" class="rest-cell">
+                            <i class="fas fa-bed"></i> 休息日 - 充电日，我们周四见！
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期四 - 中午 -->
+                    <tr>
+                        <td class="day-cell">星期四</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 12:00 - 15:00</td>
+                        <td class="seats-cell"><span class="seats-badge">9人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期四 - 晚上 -->
+                    <tr>
+                        <td class="day-cell"></td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期五 -->
+                    <tr>
+                        <td class="day-cell">星期五</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">好蛋成双</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗自建房</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                                <div class="play-card">
+                                    <span class="play-name">炸弹狂欢</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期六 - 中午 -->
+                    <tr>
+                        <td class="day-cell">星期六</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 12:00 - 15:00</td>
+                        <td class="seats-cell"><span class="seats-badge">9人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期六 - 晚上 -->
+                    <tr>
+                        <td class="day-cell"></td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期日 - 中午 -->
+                    <tr>
+                        <td class="day-cell">星期日</td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 12:00 - 15:00</td>
+                        <td class="seats-cell"><span class="seats-badge">9人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- 星期日 - 晚上 -->
+                    <tr>
+                        <td class="day-cell"></td>
+                        <td class="time-cell"><i class="far fa-clock"></i> 18:00 - 23:00</td>
+                        <td class="seats-cell"><span class="seats-badge">12人</span></td>
+                        <td class="play-cell">
+                            <div class="play-container">
+                                <div class="play-card">
+                                    <span class="play-name">疯狂乱斗</span>
+                                    <span class="play-count">2局</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="rules-section">
+        <h2 class="rules-title"><i class="fas fa-car"></i> 上车规则摘要</h2>
+        <div class="rules-grid">
+            <div class="rule-card">
+                <h4><i class="fas fa-gem"></i> 新粉福利</h4>
+                <p>灯牌升到2级，可体验1次上车（仅限首次）。</p>
+            </div>
+            <div class="rule-card">
+                <h4><i class="fas fa-crown"></i> 墨镜/会员</h4>
+                <p>送「墨镜」或开通「会员」，可获得1次上车机会。会员有效期内每场都可以参与排队。</p>
+            </div>
+            <div class="rule-card">
+                <h4><i class="fas fa-bolt"></i> 插队权限</h4>
+                <p>满足以上条件后，刷「比心兔兔」或等价礼物即可获得当次插队资格。开通「星守护」当天直接获得1次插队权限。</p>
+            </div>
+            <div class="rule-card">
+                <h4><i class="fas fa-users"></i> 代排/代刷规则</h4>
+                <p>同权限粉丝可代排，需提前报备双方昵称。每人最多帮1人代排/代刷，不允许批量操作。</p>
+            </div>
+            <div class="rule-card">
+                <h4><i class="fas fa-user-shield"></i> 特殊代排</h4>
+                <p>有上车权限大号无法登录，小号代排需报备大小号昵称，核验后按大号权限排队，仅可代排1次。</p>
+            </div>
+            <div class="rule-card">
+                <h4><i class="fas fa-clipboard-check"></i> 重要说明</h4>
+                <p>车位按真人主体计算，多号排队仅保留1个有效名额。一切以后台记录为准，场控实时登记名单。</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 蛋仔派对直播间 | 时间表如有变动，请以粉丝群公告为准</p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">爱你们！我们直播间不见不散！ ❤️</p>
+    </div>
+
+    <script>
+        // 添加交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为表格行添加悬停效果
+            const tableRows = document.querySelectorAll('.schedule-table tbody tr');
+            
+            tableRows.forEach(row => {
+                if (!row.classList.contains('rest-row')) {
+                    row.addEventListener('mouseenter', function() {
+                        this.style.backgroundColor = '#f0f8ff';
+                    });
+                    
+                    row.addEventListener('mouseleave', function() {
+                        this.style.backgroundColor = '';
+                    });
+                }
+            });
+            
+            // 添加当前日期高亮
+            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const today = new Date().getDay();
+            const todayName = days[today];
+            
+            tableRows.forEach(row => {
+                const dayCell = row.querySelector('.day-cell');
+                if (dayCell && dayCell.textContent === todayName) {
+                    row.style.backgroundColor = '#f0f8ff';
+                    row.style.boxShadow = 'inset 3px 0 0 #4dabf7';
+                    
+                    // 添加"今日"标签
+                    if (!dayCell.querySelector('.today-badge')) {
+                        const todayBadge = document.createElement('span');
+                        todayBadge.className = 'today-badge';
+                        todayBadge.innerHTML = '<span style="background-color: #4dabf7; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-left: 8px;">今日</span>';
+                        dayCell.appendChild(todayBadge);
+                    }
+                }
+            });
+            
+            // 为移动设备添加触摸反馈
+            if ('ontouchstart' in window) {
+                tableRows.forEach(row => {
+                    row.addEventListener('touchstart', function() {
+                        if (!this.classList.contains('rest-row')) {
+                            this.style.backgroundColor = '#f0f8ff';
+                        }
+                    });
+                    
+                    row.addEventListener('touchend', function() {
+                        if (!this.classList.contains('rest-row')) {
+                            this.style.backgroundColor = '';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
